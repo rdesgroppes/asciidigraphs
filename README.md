@@ -8,7 +8,7 @@ WIP: Python library for parsing ASCII directed graphs.
 
 ## Example
 The following code snippet shows how to parse an ASCII directed graph, then convert it to
-a `networkx.DiGraph` and finally display it by means of `matplotlib`.
+a `networkx.DiGraph` and finally display it by means of `matplotlib`:
 
 ```python
 import networkx as nx
@@ -20,33 +20,39 @@ from asciidigraphs.parser import parse
 if __name__ == "__main__":
     graph = parse(
         r"""
-    (A)--->(B)-----(C)------(D)-----(E)<--(F)
-     ^      |       |        ^         \ /
-     |      |       |        |          X
-     |      |       v        |         / \
-    (G)-----+------(H)----->(I)-----(J)-->(K)
-     |      |         \    / |       |     |
-     |      |          (LL)  |       |     |
-     |      v         /    \ |       |     |
-    (M)----(N)-----(O)<-----(P)-----(Q)<--(R)
-
-(teleport)
+    (a)-->(b)---(c)---------(d)-----(e)<--(f)
+     ^     |     |           ^         \ /
+     |     |     |           |          X
+     |     |     v           |         / \
+    (g)----+----(h)-------->(i)-----(j)-->(k)
+       \   |      ^        / | \         /
+        \  |       \      v  |  \       /
+         \ |        (l)<-(m) |   \     /
+          vv        /      \ |    \   /
+          (n)-----(o)<------(p)    (q)
 """,
-        "(R)->(teleport)->(A)",
+        r"""
+    (a)
+       \
+        ------------(under)-----(ground)-(j)
+""",
     )
     nx_graph = to_networkx(graph)
     pos_by_node_symbol = {node.symbol: (node.pos.x, -node.pos.y) for node in graph.nodes}
-    nx.draw_networkx(nx_graph, pos=pos_by_node_symbol)
+    nx.draw_networkx(nx_graph, node_color="#add8e6", pos=pos_by_node_symbol)
     nx.draw_networkx_edge_labels(
         nx_graph,
         pos=pos_by_node_symbol,
         edge_labels={
-            (e.from_node.symbol, e.to_node.symbol): len(e.symbol) for e in graph.edges
+            (e.from_node.symbol, e.to_node.symbol): (
+                e.to_node.pos - e.from_node.pos
+            ).distance
+            for e in graph.edges
         },
     )
     pyplot.show()
 ```
 
-Expected output:
+Here's the expected output:
 
 ![Plot](docs/plot.png)

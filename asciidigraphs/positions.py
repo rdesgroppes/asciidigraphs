@@ -6,6 +6,10 @@ class Offset(namedtuple("Offset", "dx dy dz")):
         # noinspection PyArgumentList
         return super().__new__(cls, dx, dy, dz)
 
+    @property
+    def distance(self):
+        return round(sum(o * o for o in self) ** 0.5, 1)
+
 
 DOWN = Offset(dx=0, dy=1)
 DOWN_LEFT = Offset(dx=-1, dy=1)

@@ -5,6 +5,10 @@ def test_new_offset_with_default_z():
     assert Offset(1, 2) == Offset(dx=1, dy=2, dz=0)
 
 
+def test_offset_to_euclidean_distance():
+    assert Offset(3, 4, 0).distance == 5
+
+
 def test_new_pos_with_default_z():
     assert Pos(1, 2) == Pos(x=1, y=2, z=0)
 
